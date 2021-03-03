@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class User(models.Model):
-	user_id = models.CharField(max_length=60)
+	user_id = models.CharField(max_length=60, unique=True)
 	identifier = models.AutoField(primary_key=True)
 
 class interaction(models.Model):

@@ -1,11 +1,38 @@
 from django.shortcuts import render
+from django.http.response import JsonResponse
+from rest_framework.parsers import JSONParser, MultiPartParser
+from rest_framework import status
+from rest_framework.decorators import api_view, parser_classes, permission_classes
+from api.serializers import UserSerializer, InteractionSerializer, SongsSerializer 
+from api.models import User, interaction, songs
 
 # Create your views here.
 
+@api_view(['POST'])
 def login(request):
 
+	try:
+
+		user = User.objects.get(user_id = request.data['user_id']) 
+		return JsonResponse('se logro', safe=False,status=status.HTTP_202_ACCEPTED)
+
+
+	except User.DoesNotExist:
+		return JsonResponse('no se logro', safe=False,status=status.HTTP_404_NOT_FOUND)
+	
+
+@api_view(['POST'])
 def register(request):
 
+	serializer = UserSerializer(data = request.data)
+	if serializer.is_valid():
+		serializer.save()
+		return JsonResponse(serializer.data, safe=False, status=status.HTTP_202_ACCEPTED)
+	else:
+		return JsonResponse('El usuario que se quiere crear ya existe', safe=False, status=status.HTTP_400_BAD_REQUEST)
+
 def give_recommendations(request):
+	print ('')
 
 def increase_number_counts(request):
+	print ('')
