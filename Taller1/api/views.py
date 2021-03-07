@@ -3,8 +3,8 @@ from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes, permission_classes
-from api.serializers import UserSerializer, InteractionSerializer, SongsSerializer 
-from api.models import User, interaction, songs
+from api.serializers import UserSerializer, InteractionsSerializer, SongsSerializer 
+from api.models import User, Interactions, Songs
 
 # Pandas stuff
 import pandas as pd
