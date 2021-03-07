@@ -13,7 +13,6 @@ import pandas as pd
 
 @api_view(['POST'])
 def login(request):
-
 	try:
 
 		user = User.objects.get(user_id = request.data['user_id']) 
@@ -23,6 +22,16 @@ def login(request):
 	except User.DoesNotExist:
 		return JsonResponse('no se logro', safe=False,status=status.HTTP_404_NOT_FOUND)
 	
+@api_view(['GET'])
+def get_user_data(request, user_id):
+	try:
+		user = User.objects.get(user_id = user_id) 
+		return JsonResponse(user, safe=False,status=status.HTTP_200_OK)
+
+
+	except User.DoesNotExist:
+		return JsonResponse('Not found', safe=False,status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['POST'])
 def register(request):
