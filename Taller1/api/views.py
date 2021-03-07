@@ -6,6 +6,9 @@ from rest_framework.decorators import api_view, parser_classes, permission_class
 from api.serializers import UserSerializer, InteractionsSerializer, SongsSerializer 
 from api.models import User, Interactions, Songs
 
+# Rendering response
+from rest_framework.renderers import JSONRenderer
+
 # Pandas stuff
 import pandas as pd
 
@@ -26,10 +29,11 @@ def get_user_data(request, user_query_id):
 	try:
 		user = User.objects.get(user_id = user_query_id)
 		serialized_entity = UserSerializer(data=user, many=False)
-		if serialized_entity.is_valid():
-			return JsonResponse(serialized_entity.data, safe=False,status=status.HTTP_200_OK)
+		return JsonResponse(JSONRenderer().render(serialized_entity.data), safe=False,status=status.HTTP_200_OK)
+		
+		""" if serialized_entity.is_valid():
 		else:
-			return JsonResponse('Internal server error, data not valid', safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+			return JsonResponse('Internal server error, data not valid', safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR) """
 	except User.DoesNotExist:
 		return JsonResponse('Not found', safe=False,status=status.HTTP_404_NOT_FOUND)
 
