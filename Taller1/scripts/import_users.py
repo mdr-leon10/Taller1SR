@@ -10,5 +10,5 @@ def run():
     User.objects.all().delete()
 
     for row in reader:
-        user_created = User.(user_id=row[0], is_old_user=True, recommendation_frame=0)
+        user_created = User(user_id=row[0], is_old_user=True, recommendation_frame=0)
         user_created.save()
