@@ -39,8 +39,9 @@ def get_user_data(request, user_query_id):
 @api_view(['GET'])
 def get_all_users(request):
 	try:
-		user = User.objects.all()
-		serialized_users = UserSerializer(data=user, many=True)
+		users_query = User.objects.all()
+		print(users_query)
+		serialized_users = UserSerializer(data=users_query, many=True)
 		if serialized_users.is_valid():
 			return JsonResponse(JSONRenderer().render(serialized_users.data), safe=False,status=status.HTTP_200_OK)
 		else:
@@ -51,7 +52,6 @@ def get_all_users(request):
 
 @api_view(['POST'])
 def register(request):
-
 	serializer = UserSerializer(data = request.data)
 	if serializer.is_valid():
 		serializer.save()
