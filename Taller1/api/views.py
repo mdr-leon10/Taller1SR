@@ -41,7 +41,7 @@ def get_all_users(request):
 	try:
 		users_query = User.objects.all()
 		print(users_query)
-		serialized_users = UserSerializer(data=users_query)
+		serialized_users = UserSerializer(users_query, many=True)
 		if serialized_users.is_valid():
 			return JsonResponse(JSONRenderer().render(serialized_users.data), safe=False,status=status.HTTP_200_OK)
 		else:
