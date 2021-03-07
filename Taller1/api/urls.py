@@ -6,6 +6,6 @@ urlpatterns = [
     # Public endpoints
     path('login/', views.login),
     path('register/', views.register),
-    path('recommendation/<user>/', views.get_recommendations),
-    path('listen/<song>/', views.increase_number_counts),
+    path('recommendation/<string:user_id>/', views.get_recommendations),
+    path('listen/<string:song_id>/', views.increase_number_counts),
 ]
