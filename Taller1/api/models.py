@@ -9,14 +9,9 @@ class User(models.Model):
 
 class Interactions(models.Model):
 	identifier = models.AutoField(primary_key=True)
-	artist_id = models.CharField(max_length=255)
-	artist_name = models.CharField(max_length=255)
-	track_name = models.CharField(max_length=255)
-	track_id = models.CharField(max_length=255)
-	rating = models.FloatField()
-	is_explicit = models.BooleanField(default=False)
-	count = models.PositiveIntegerField()
+	from_song = models.ForeignKey(Songs, on_delete=models.CASCADE)
 	from_user = models.ForeignKey(User, on_delete=models.CASCADE)
+	count = models.PositiveIntegerField()
 
 class Songs(models.Model):
 	identifier = models.AutoField(primary_key=True)
