@@ -5,6 +5,8 @@ from api.models import User, Interactions, Songs
 def run():
     csv_file = open('./ImportData/interactions-data.csv')
     reader = csv.reader(csv_file)
+    #Skip header
+    next(reader, None)
 
     for row in reader:
         u = User.objects.get(user_id=row[0])
