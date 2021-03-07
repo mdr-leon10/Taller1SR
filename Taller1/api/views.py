@@ -28,7 +28,8 @@ def login(request):
 def get_user_data(request, user_query_id):
 	try:
 		user = User.objects.get(user_id = user_query_id)
-		return JsonResponse(JSONRenderer().render(UserSerializer().to_representation(instance=user)), safe=False,status=status.HTTP_200_OK)
+		serialized_user = UserSerializer(user)
+		return JsonResponse(serialized_user.data, safe=False,status=status.HTTP_200_OK)
 	except User.DoesNotExist:
 		return JsonResponse('Not found', safe=False,status=status.HTTP_404_NOT_FOUND)
 
@@ -38,10 +39,7 @@ def get_all_users(request):
 		users_query = User.objects.all()
 		print(users_query)
 		serialized_users = UserSerializer(users_query, many=True)
-		if serialized_users.is_valid():
-			return JsonResponse(JSONRenderer().render(serialized_users.data), safe=False,status=status.HTTP_200_OK)
-		else:
-			return JsonResponse(serialized_users.errors, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+		return JsonResponse(serialized_users.data, safe=False,status=status.HTTP_200_OK)
 	except User.DoesNotExist:
 		return JsonResponse('Not found', safe=False,status=status.HTTP_404_NOT_FOUND)
 
