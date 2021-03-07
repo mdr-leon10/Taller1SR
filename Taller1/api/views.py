@@ -61,7 +61,7 @@ def get_recommendations(request, user_id):
 		if user.is_old_user:
 			df_top_for_user = pd.read_csv(f'./Export/{user_id}_top_100.csv')
 			min_id, max_id = (10*user.recommendation_frame, 10*(user.recommendation_frame + 1))
-			sample = df_top_for_user[['iid','est']][mid_id:max_id].to_dict()
+			sample = df_top_for_user[['iid','est']][min_id:max_id].to_dict()
 			return JsonResponse(sample, safe=False, status=status.HTTP_200_OK)
 		else:
 			# TODO: add best songs based on items.
