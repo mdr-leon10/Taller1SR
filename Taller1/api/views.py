@@ -30,7 +30,7 @@ def get_user_data(request, user_query_id):
 		user = User.objects.get(user_id = user_query_id)
 		serialized_entity = UserSerializer(data=user)
 		if serialized_entity.is_valid():
-			return JsonResponse(JSONRenderer().render(serialized_entity.data), safe=False,status=status.HTTP_200_OK)
+			return JsonResponse(JSONRenderer().render(serialized_entity.to_representation()), safe=False,status=status.HTTP_200_OK)
 		else:
 			return JsonResponse(serialized_entity.errors, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 	except User.DoesNotExist:
