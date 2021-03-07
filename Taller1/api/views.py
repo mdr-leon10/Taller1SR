@@ -28,8 +28,9 @@ def login(request):
 def get_user_data(request, user_query_id):
 	try:
 		user = User.objects.get(user_id = user_query_id)
-		serialized_entity = UserSerializer(data=user, many=False)
-		
+		serialized_entity = UserSerializer(data=user)
+		print(user)
+		print(serialized_entity.data)
 		if serialized_entity.is_valid():
 			return JsonResponse(JSONRenderer().render(serialized_entity.data), safe=False,status=status.HTTP_200_OK)
 		else:
