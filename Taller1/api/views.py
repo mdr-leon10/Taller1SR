@@ -25,14 +25,12 @@ def login(request):
 @api_view(['GET'])
 def get_user_data(request, user_id):
 	try:
-		user = User.objects.get(user_id = user_id)
+		user = User.objects.all().filter(user_id = user_id)[0]
 		user_serialized = UserSerializer(data = user)
 		if user_serialized.is_valid():
 			return JsonResponse(user_serialized.data, safe=False,status=status.HTTP_200_OK)
 		else:
 			return JsonResponse('Internal server error, data not valid', safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-		
-
 	except User.DoesNotExist:
 		return JsonResponse('Not found', safe=False,status=status.HTTP_404_NOT_FOUND)
 
