@@ -26,8 +26,8 @@ def login(request):
 def get_user_data(request, user_id):
 	try:
 		user = User.objects.get(user_id = user_id)
-		user_data = UserSerializer(data = user)
-		return JsonResponse(user_data, safe=False,status=status.HTTP_200_OK)
+		user_serialized = UserSerializer(data = user)
+		return JsonResponse(user_serialized.data, safe=False,status=status.HTTP_200_OK)
 
 
 	except User.DoesNotExist:
