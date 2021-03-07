@@ -5,6 +5,7 @@ from django.conf.urls import url
 urlpatterns = [
     # Public endpoints
     path('login/', views.login),
+    path('users/', views.get_all_users),
     path('user/<str:user_query_id>', views.get_user_data),
     path('register/', views.register),
     path('recommendation/<str:user_id>/', views.get_recommendations),

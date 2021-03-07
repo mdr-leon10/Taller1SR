@@ -37,7 +37,7 @@ def get_user_data(request, user_query_id):
 		return JsonResponse('Not found', safe=False,status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET'])
-def get_all_users(request, user_query_id):
+def get_all_users(request):
 	try:
 		user = User.objects.all()
 		serialized_users = UserSerializer(user, many=True)
