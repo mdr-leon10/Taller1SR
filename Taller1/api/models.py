@@ -16,6 +16,9 @@ class Songs(models.Model):
 
 class Interactions(models.Model):
 	identifier = models.AutoField(primary_key=True)
-	from_song = models.ForeignKey(Songs, on_delete=models.CASCADE)
-	from_user = models.ForeignKey(User, on_delete=models.CASCADE)
+	user_id = models.CharField(max_length=60)
+	artist_id = models.CharField(max_length=255)
+	artist_name = models.CharField(max_length=255)
+	track_name = models.CharField(max_length=255)
+	track_id = models.CharField(max_length=255)
 	count = models.PositiveIntegerField()
