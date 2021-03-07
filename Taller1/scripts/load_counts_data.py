@@ -18,3 +18,4 @@ def run():
         )
 
         inter = Interactions(from_song=s, from_user=u, count=row[5])
+        inter.save()
