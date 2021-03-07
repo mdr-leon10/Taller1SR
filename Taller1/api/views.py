@@ -23,9 +23,9 @@ def login(request):
 		return JsonResponse('no se logro', safe=False,status=status.HTTP_404_NOT_FOUND)
 	
 @api_view(['GET'])
-def get_user_data(request, user_id):
+def get_user_data(request, user_query_id):
 	try:
-		user = User.objects.all().filter(user_id = user_id)[0]
+		user = User.objects.get(user_id = user_query_id)
 		user_serialized = UserSerializer(data = user)
 		if user_serialized.is_valid():
 			return JsonResponse(user_serialized.data, safe=False,status=status.HTTP_200_OK)
