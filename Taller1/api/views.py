@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.http.response import JsonResponse
-from django.core import serializers
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes, permission_classes
@@ -26,10 +25,9 @@ def login(request):
 def get_user_data(request, user_query_id):
 	try:
 		user = User.objects.get(user_id = user_query_id)
-		#user = User.objects.all()
-		data = serializers.serialize("json", user)
-		if data.is_valid():
-			return JsonResponse(data.data, safe=False,status=status.HTTP_200_OK)
+		serialized_entity = UserSerializer(data=user, many=False)
+		if serialized_entity.is_valid():
+			return JsonResponse(serialized_entity.data, safe=False,status=status.HTTP_200_OK)
 		else:
 			return JsonResponse('Internal server error, data not valid', safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 	except User.DoesNotExist:
