@@ -38,7 +38,7 @@ def register(request):
 def get_recommendations(request, user_id):
 	df_top_for_user = pd.read_csv(f'./Export/{user_id}_top_100.csv')
 	sample = df_top_for_user.sample(n=10).to_dict()
-	return JsonResponse(sample, safe_False, status=status.HTTP_200_OK)
+	return JsonResponse(sample, safe=False, status=status.HTTP_200_OK)
 
 def increase_number_counts(request, song_id):
 	print ('')
