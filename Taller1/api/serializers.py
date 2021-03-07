@@ -1,9 +1,9 @@
 # serializers.py
 from rest_framework import serializers
 
-from .models import User
-from .models import Interactions
-from .models import Songs
+from api.models import User
+from api.models import Interactions
+from api.models import Songs
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
