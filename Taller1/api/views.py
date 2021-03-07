@@ -6,6 +6,9 @@ from rest_framework.decorators import api_view, parser_classes, permission_class
 from api.serializers import UserSerializer, InteractionSerializer, SongsSerializer 
 from api.models import User, interaction, songs
 
+# Pandas stuff
+import pandas as pd
+
 # Create your views here.
 
 @api_view(['POST'])
@@ -31,8 +34,11 @@ def register(request):
 	else:
 		return JsonResponse('El usuario que se quiere crear ya existe', safe=False, status=status.HTTP_400_BAD_REQUEST)
 
-def give_recommendations(request):
-	print ('')
+@api_view(['GET'])
+def get_recommendations(request, user_id):
+	df_top_for_user = pd.read_csv(f'./Export/{user}_top_100.csv')
+	sample = df_top_for_user.sample(n=10).to_dict()
+	return JsonResponse(sample, safe_False, status=status.HTTP_200_OK)
 
-def increase_number_counts(request):
+def increase_number_counts(request, song_id):
 	print ('')
