@@ -14,7 +14,7 @@ class Interactions(models.Model):
 	rating = models.FloatField()
 	is_explicit = models.BooleanField(default=False)
 	count = models.PositiveIntegerField()
-	from_user = models.ForeignKey(User)
+	from_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Songs(models.Model):
 	identifier = models.AutoField(primary_key=True)
