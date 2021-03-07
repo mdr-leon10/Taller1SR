@@ -4,6 +4,8 @@ from django.db import models
 class User(models.Model):
 	user_id = models.CharField(max_length=60, unique=True)
 	identifier = models.AutoField(primary_key=True)
+	is_old_user = models.BooleanField(default=False)
+	recommendation_frame = models.IntegerField(default=0)
 
 class Interactions(models.Model):
 	identifier = models.AutoField(primary_key=True)

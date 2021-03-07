@@ -8,7 +8,7 @@ from .models import Songs
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('user_id', 'identifier')
+        fields = ('user_id', 'identifier', 'is_old_user', 'recommendation_frame')
 
 class InteractionsSerializer(serializers.ModelSerializer):
     class Meta:
