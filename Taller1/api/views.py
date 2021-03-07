@@ -55,9 +55,20 @@ def register(request):
 
 @api_view(['GET'])
 def get_recommendations(request, user_id):
-	df_top_for_user = pd.read_csv(f'./Export/{user_id}_top_100.csv')
-	sample = df_top_for_user.sample(n=10)[['iid','est']].to_dict()
-	return JsonResponse(sample, safe=False, status=status.HTTP_200_OK)
+	try:
+		user = User.objects.get(user_id = user_id)
+
+		if user.is_old_user:
+			df_top_for_user = pd.read_csv(f'./Export/{user_id}_top_100.csv')
+			min_id, max_id = (10*user.recommendation_frame, 10*(user.recommendation_frame + 1))
+			sample = df_top_for_user[['iid','est']][mid_id:max_id].to_dict()
+			return JsonResponse(sample, safe=False, status=status.HTTP_200_OK)
+		else:
+			# TODO: add best songs based on items.
+			return JsonResponse({'message': 'work in progress'}, safe=False, status=status.HTTP_200_OK)
+
+	except User.DoesNotExist:
+		return JsonResponse('User does not exist', safe=False,status=status.HTTP_404_NOT_FOUND)
 
 def increase_number_counts(request, song_id):
 	print ('')
