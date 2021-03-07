@@ -28,7 +28,7 @@ def login(request):
 def get_user_data(request, user_query_id):
 	try:
 		user = User.objects.get(user_id = user_query_id)
-		return JsonResponse(JSONRenderer().render(serialized_entity.to_representation(user)), safe=False,status=status.HTTP_200_OK)
+		return JsonResponse(JSONRenderer().render(UserSerializer.to_representation(user)), safe=False,status=status.HTTP_200_OK)
 	except User.DoesNotExist:
 		return JsonResponse('Not found', safe=False,status=status.HTTP_404_NOT_FOUND)
 
