@@ -14,7 +14,6 @@ import pandas as pd
 @api_view(['POST'])
 def login(request):
 	try:
-
 		user = User.objects.get(user_id = request.data['user_id']) 
 		return JsonResponse('se logro', safe=False,status=status.HTTP_202_ACCEPTED)
 
@@ -26,6 +25,7 @@ def login(request):
 def get_user_data(request, user_query_id):
 	try:
 		user = User.objects.get(user_id = user_query_id)
+		print(user)
 		user_serialized = UserSerializer(data = user)
 		if user_serialized.is_valid():
 			return JsonResponse(user_serialized.data, safe=False,status=status.HTTP_200_OK)
