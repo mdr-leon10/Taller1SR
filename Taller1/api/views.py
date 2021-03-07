@@ -26,7 +26,7 @@ def get_user_data(request, user_query_id):
 	try:
 		user = User.objects.get(user_id = user_query_id)
 		print(user)
-		user_serialized = UserSerializer(data = user)
+		user_serialized = UserSerializer(user)
 		if user_serialized.is_valid():
 			return JsonResponse(user_serialized.data, safe=False,status=status.HTTP_200_OK)
 		else:
