@@ -29,11 +29,11 @@ def get_user_data(request, user_query_id):
 	try:
 		user = User.objects.get(user_id = user_query_id)
 		serialized_entity = UserSerializer(data=user, many=False)
-		return JsonResponse(JSONRenderer().render(serialized_entity.data), safe=False,status=status.HTTP_200_OK)
 		
-		""" if serialized_entity.is_valid():
+		if serialized_entity.is_valid():
+			return JsonResponse(JSONRenderer().render(serialized_entity.data), safe=False,status=status.HTTP_200_OK)
 		else:
-			return JsonResponse('Internal server error, data not valid', safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR) """
+			return JsonResponse('Internal server error, data not valid', safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 	except User.DoesNotExist:
 		return JsonResponse('Not found', safe=False,status=status.HTTP_404_NOT_FOUND)
 
