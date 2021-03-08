@@ -18,4 +18,4 @@ class InteractionsSerializer(serializers.ModelSerializer):
 class SongsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Songs
-        fields = ['artist_id', 'artist_name', 'track_name', 'track_id', 'identifier']
+        fields = ['artist_id', 'artist_name', 'track_name', 'track_id', 'play_count', 'identifier']
