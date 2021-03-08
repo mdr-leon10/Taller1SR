@@ -18,11 +18,9 @@ import pandas as pd
 def login(request):
 	try:
 		user = User.objects.get(user_id = request.data['user_id']) 
-		return JsonResponse('se logro', safe=False,status=status.HTTP_202_ACCEPTED)
-
-
-	except User.DoesNotExist:
-		return JsonResponse('no se logro', safe=False,status=status.HTTP_404_NOT_FOUND)
+		return JsonResponse('Valid user', safe=False,status=status.HTTP_200_OK)
+	except:
+		return JsonResponse('Not a valid user', safe=False,status=status.HTTP_404_NOT_FOUND)
 	
 @api_view(['GET'])
 def get_user_data(request, user_query_id):
@@ -51,7 +49,7 @@ def register(request):
 		serializer.save()
 		return JsonResponse(serializer.data, safe=False, status=status.HTTP_202_ACCEPTED)
 	else:
-		return JsonResponse('El usuario que se quiere crear ya existe', safe=False, status=status.HTTP_400_BAD_REQUEST)
+		return JsonResponse({'error': 'El usuario que se quiere crear ya existe'}, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def get_recommendations(request, user_id):
@@ -68,12 +66,11 @@ def get_recommendations(request, user_id):
 			return JsonResponse({'message': 'work in progress'}, safe=False, status=status.HTTP_200_OK)
 
 	except User.DoesNotExist:
-		return JsonResponse('User does not exist', safe=False,status=status.HTTP_404_NOT_FOUND)
+		return JsonResponse({'error': 'User does not exist'}, safe=False,status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['POST'])
 def play_song(request):
 	log = []
-
 	payload = request.data
 	try:
 		uid = payload['user_id']
@@ -94,7 +91,7 @@ def play_song(request):
 		serialized_song = SongsSerializer(song_obj)
 		return JsonResponse({'song_update': serialized_song.data, 'log_out': log}, safe=False, status=status.HTTP_202_ACCEPTED)
 	except:
-		return JsonResponse({'msg': 'an error ocurred, could not update the song play count'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+		return JsonResponse({'error': 'an error ocurred, could not update the song play count'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def like_artist(request):
 	payload = request.data
@@ -104,8 +101,10 @@ def like_artist(request):
 		valid = like_artist_helper(uid, aid)
 		if valid:
 			return JsonResponse({'msg': "was able to update the user's preferences"}, safe=False, status=status.HTTP_202_ACCEPTED)
+		else:
+			return JsonResponse({'error': "an error ocurred, could not update the user's preferences"}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 	except:
-		return JsonResponse({'msg': "an error ocurred, could not update the user's preferences"}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+		return JsonResponse({'error': "an error ocurred, could not update the user's preferences"}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def like_artist_helper(uid, aid):
 	try:
@@ -113,3 +112,6 @@ def like_artist_helper(uid, aid):
 		return True
 	except:
 		return False
+
+#TODO: get info from aid
+#TODO: get info from tid
