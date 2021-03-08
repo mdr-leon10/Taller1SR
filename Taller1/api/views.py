@@ -70,5 +70,28 @@ def get_recommendations(request, user_id):
 	except User.DoesNotExist:
 		return JsonResponse('User does not exist', safe=False,status=status.HTTP_404_NOT_FOUND)
 
-def increase_number_counts(request, song_id):
-	print ('')
+@api_view(['POST'])
+def play_song(request):
+	payload = request.data
+	try:
+		uid = payload['user_id']
+		tid = payload['track_id']
+		song_obj = Songs.objects.get(track_id=tid)
+		song_obj.play_count = song_obj.play_count + 1
+		song_obj.save()
+		
+		interatcion_obj, created = Interactions.objects.get_or_create(user_id=uid, track_id=tid)
+		if created:
+			interatcion_obj.count = 1
+			interatcion_obj.artist_id = song_obj.artist_id
+			interatcion_obj.artist_name = song_obj.artist_name
+			interatcion_obj.track_name = song_obj.track_name
+			interatcion_obj.track_id = song_obj.track_id
+		else:
+			interatcion_obj.count = interatcion_obj.count + 1
+		
+		interatcion_obj.save()
+		serialized_interaction = InteractionsSerializer(interatcion_obj)
+		return JsonResponse(serialized_interaction.data, safe=False, status=status.HTTP_202_ACCEPTED)
+	except:
+		return JsonResponse({'msg': 'an error ocurred, could not update the song play count'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
