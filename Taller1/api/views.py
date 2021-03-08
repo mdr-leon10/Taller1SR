@@ -89,6 +89,7 @@ def play_song(request):
 		except User.DoesNotExist:
 			log.append('user entered did not exist')
 		except:
+			logging.exception('Unkown reason logging')
 			log.append('user like artist failed for unknown reason')
 		serialized_song = SongsSerializer(song_obj)
 		return JsonResponse({'song_update': serialized_song.data, 'log_out': log}, safe=False, status=status.HTTP_202_ACCEPTED)
