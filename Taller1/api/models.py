@@ -23,3 +23,8 @@ class Interactions(models.Model):
 	track_name = models.CharField(max_length=255)
 	track_id = models.CharField(max_length=255)
 	count = models.PositiveIntegerField(default=0)
+
+class ArtistLiked(models.Model):
+	identifier = models.AutoField(primary_key=True)
+	user_id = models.CharField(max_length=60)
+	artist_id = models.CharField(max_length=255)

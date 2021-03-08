@@ -3,8 +3,8 @@ from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes, permission_classes
-from api.serializers import UserSerializer, InteractionsSerializer, SongsSerializer 
-from api.models import User, Interactions, Songs
+from api.serializers import UserSerializer, InteractionsSerializer, SongsSerializer, ArtistLikedSerializer
+from api.models import User, Interactions, Songs, ArtistLiked
 
 # Rendering response
 from rest_framework.renderers import JSONRenderer
@@ -72,6 +72,8 @@ def get_recommendations(request, user_id):
 
 @api_view(['POST'])
 def play_song(request):
+	log = []
+
 	payload = request.data
 	try:
 		uid = payload['user_id']
@@ -80,7 +82,34 @@ def play_song(request):
 		song_obj.play_count = song_obj.play_count + 1
 		song_obj.save()
 
+		try:
+			user = User.objects.get(user_id = user_id)
+			if not user.is_old_user:
+				if not like_artist_helper(user.user_id, song_obj.artist_id):
+					log.append('user was new but failed to like artist')
+		except User.DoesNotExist:
+			log.append('user entered did not exist')
+		except:
+			log.append('user like artist failed for unknown reason')
 		serialized_song = SongsSerializer(song_obj)
-		return JsonResponse(serialized_song.data, safe=False, status=status.HTTP_202_ACCEPTED)
+		return JsonResponse({'song_update': serialized_song.data, 'log_out': log}, safe=False, status=status.HTTP_202_ACCEPTED)
 	except:
 		return JsonResponse({'msg': 'an error ocurred, could not update the song play count'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+def like_artist(request):
+	payload = request.data
+	try:
+		uid = payload['user_id']
+		aid = payload['artist_id']
+		valid = like_artist_helper(uid, aid)
+		if valid:
+			return JsonResponse({'msg': "was able to update the user's preferences"}, safe=False, status=status.HTTP_202_ACCEPTED)
+	except:
+		return JsonResponse({'msg': "an error ocurred, could not update the user's preferences"}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+def like_artist_helper(uid, aid):
+	try:
+		al, created = ArtistLiked.objects.get_or_create(user_id=uid, artist_id=aid)
+		return True
+	except:
+		return False
