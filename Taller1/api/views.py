@@ -118,5 +118,9 @@ def like_artist_helper(uid, aid):
 		logging.exception('Error for like artist helper')
 		return False
 
+def get_top_artists_helper(uid):
+	
+
 #TODO: get info from aid
 #TODO: get info from tid
+#TODO: push recommendation window
