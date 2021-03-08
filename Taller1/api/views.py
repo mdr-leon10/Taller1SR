@@ -95,6 +95,7 @@ def play_song(request):
 	except:
 		return JsonResponse({'error': 'an error ocurred, could not update the song play count'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(['POST'])
 def like_artist(request):
 	payload = request.data
 	try:
