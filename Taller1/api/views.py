@@ -82,7 +82,7 @@ def play_song(request):
 		song_obj.save()
 
 		try:
-			user = User.objects.get(user_id = user_id)
+			user = User.objects.get(user_id = uid)
 			if not user.is_old_user:
 				if not like_artist_helper(user.user_id, song_obj.artist_id):
 					log.append('user was new but failed to like artist')
