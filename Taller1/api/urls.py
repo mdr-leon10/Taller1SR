@@ -10,4 +10,5 @@ urlpatterns = [
     path('register/', views.register),
     path('recommendation/<str:user_id>/', views.get_recommendations),
     path('play/', views.play_song),
+    path('like/', views.like_artist),
 ]
