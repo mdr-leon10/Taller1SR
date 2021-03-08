@@ -13,6 +13,7 @@ class Songs(models.Model):
 	artist_name = models.CharField(max_length=255)
 	track_name = models.CharField(max_length=255)
 	track_id = models.CharField(max_length=255)
+	play_count = models.PositiveIntegerField(default=0)
 
 class Interactions(models.Model):
 	identifier = models.AutoField(primary_key=True)
@@ -21,4 +22,4 @@ class Interactions(models.Model):
 	artist_name = models.CharField(max_length=255)
 	track_name = models.CharField(max_length=255)
 	track_id = models.CharField(max_length=255)
-	count = models.PositiveIntegerField()
+	count = models.PositiveIntegerField(default=0)
