@@ -12,7 +12,9 @@ from rest_framework.renderers import JSONRenderer
 # Pandas stuff
 import pandas as pd
 
-# Create your views here.
+# Logging
+import sys
+import logging
 
 @api_view(['POST'])
 def login(request):
@@ -111,6 +113,7 @@ def like_artist_helper(uid, aid):
 		al, created = ArtistLiked.objects.get_or_create(user_id=uid, artist_id=aid)
 		return True
 	except:
+		logging.exception('Error for like artist helper')
 		return False
 
 #TODO: get info from aid
