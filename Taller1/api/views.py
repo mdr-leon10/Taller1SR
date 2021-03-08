@@ -82,19 +82,5 @@ def play_song(request):
 
 		serialized_song = SongsSerializer(song_obj)
 		return JsonResponse(serialized_song.data, safe=False, status=status.HTTP_202_ACCEPTED)
-		
-""" 		interatcion_obj, created = Interactions.objects.get_or_create(user_id=uid, track_id=tid)
-		if created:
-			interatcion_obj.count = 1
-			interatcion_obj.artist_id = song_obj.artist_id
-			interatcion_obj.artist_name = song_obj.artist_name
-			interatcion_obj.track_name = song_obj.track_name
-			interatcion_obj.track_id = song_obj.track_id
-		else:
-			interatcion_obj.count = interatcion_obj.count + 1
-		
-		interatcion_obj.save()
-		serialized_interaction = InteractionsSerializer(interatcion_obj)
-		return JsonResponse(serialized_interaction.data, safe=False, status=status.HTTP_202_ACCEPTED) """
 	except:
 		return JsonResponse({'msg': 'an error ocurred, could not update the song play count'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
