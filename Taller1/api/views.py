@@ -171,5 +171,20 @@ def get_top_artists_helper(uid, recommendation_frame):
 		logging.exception('Error for get_top_artists_helper')
 		return []
 
+@api_view(['GET'])
+def get_user_history(request, user_id):
+	max_length = 100
+	try:
+		user_history = ArtistLiked.objetcs.all().filter(user_id=user_id)
+		user_history = user_history[0:min(max_length, len(user_history))]
+		history_data = ArtistLikedSerializer(user_history, many=True)
+		return JsonResponse({'history': history_data}, safe=False, status=status.HTTP_200_OK)
+	except:
+		logging.exception('Error for get_user_history')
+		return JsonResponse({'error': 'could not retrieve user history'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+#TODO: search song/artist name
+#TODO: top discover
 #TODO: get info from aid
 #TODO: get info from tid
