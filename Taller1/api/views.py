@@ -135,12 +135,12 @@ def get_top_artists_helper(uid):
 		random.shuffle(aid_list)
 
 		recommended_aid_list = []
-		df_neighbors = pd.read_csv(f'./Export/webapp_neighbors_map.csv')
+		df_neighbors = pd.read_csv('./Export/webapp_neighbors_map.csv')
 		for i in range(0, min(len(aid_list), 10)):
 			aid=aid_list[i]
 			req = 10
 			df_filtered = df_neighbors[aid]
-			valid = df_filtered.loc[np.bitwise_not(np.bitwise_or(np.isin(df_filtered[aid], aid_list), np.isin(df_filtered[aid], recommended_aid_list)))]
+			valid = df_filtered.loc[np.bitwise_not(np.bitwise_or(np.isin(df_filtered, aid_list), np.isin(df_filtered, recommended_aid_list)))]
 			for x in valid[aid]:
 				req -= 1
 				recommended_aid_list.append(x)
