@@ -120,7 +120,7 @@ def push_recommendation_window(request, user_id):
 		else:
 			user.recommendation_frame = user.recommendation_frame+1
 		user.save()
-		return JsonResponse('Successfully updated recommendation window', safe=False,status=status.HTTP_200_OK)
+		return JsonResponse(({'msg': 'Successfully updated recommendation window'}, safe=False,status=status.HTTP_200_OK)
 	except:
 		logging.exception('Error for push_recommendation_window')
 		return JsonResponse({'error': "an error ocurred, could not update the user's recommendation window"}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
