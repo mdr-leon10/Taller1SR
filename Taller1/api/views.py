@@ -136,7 +136,7 @@ def get_top_artists_helper(uid):
 
 		recommended_aid_list = []
 		df_neighbors = pd.read_csv(f'./Export/webapp_neighbors_map.csv')
-		for i in range(0, min(len(aid_list), 10))
+		for i in range(0, min(len(aid_list), 10)):
 			aid=aid_list[i]
 			req = 10
 			df_filtered = df_neighbors[aid]
