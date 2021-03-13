@@ -141,7 +141,7 @@ def get_top_artists_helper(uid):
 			req = 10
 			df_filtered = df_neighbors[aid]
 			valid = df_filtered.loc[np.bitwise_not(np.bitwise_or(np.isin(df_filtered, aid_list), np.isin(df_filtered, recommended_aid_list)))]
-			for x in valid[aid]:
+			for x in valid:
 				req -= 1
 				recommended_aid_list.append(x)
 				if req == 0:
