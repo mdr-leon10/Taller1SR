@@ -141,8 +141,8 @@ def get_top_artists_helper(uid):
 			req = 10
 			df_filtered = df_neighbors[aid]
 			valid = df_filtered.loc[np.bitwise_not(np.bitwise_or(np.isin(df_filtered, aid_list), np.isin(df_filtered, recommended_aid_list)))]
-			logging.log(msg=f'valid length: {len(valid)}')
-			logging.log(msg=f'{valid}')
+			print(f'valid length: {len(valid)}')
+			print(f'{valid}')
 			for x in valid:
 				req -= 1
 				recommended_aid_list.append(x)
