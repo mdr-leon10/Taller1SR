@@ -147,7 +147,7 @@ def get_top_artists_helper(uid):
 				recommended_aid_list.append(x)
 				if req == 0:
 					break
-		
+		print(f'recommended_aid_list length: {len(recommended_aid_list)}')
 		random.shuffle(recommended_aid_list)
 		filtered_res = recommended_aid_list[0:min(len(recommended_aid_list), 10)]
 		return filtered_res
