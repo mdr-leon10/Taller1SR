@@ -208,7 +208,7 @@ def get_artist_detail(request, artist_id):
 			'artist_id': songs_raw[0].artist_id,
 			'artist_name': songs_raw[0].artist_name,
 			'total_play': total_play,
-			'songs': songs.data[0, min(len(songs.data), 10)]
+			'songs': songs.data[0:min(len(songs.data), 10)]
 			}, safe=False, status=status.HTTP_200_OK)
 	except:
 		logging.exception('Error for get_track_detail')
