@@ -123,6 +123,8 @@ def like_artist_helper(uid, aid, counts):
 		return False
 
 def get_top_artists_helper(uid):
+	items_per_artist = 3
+	artists_to_poll = 5
 	try: 
 		artistsLiked = ArtistLiked.objects.all().filter(user_id=uid)
 		aid_list = []
@@ -136,9 +138,9 @@ def get_top_artists_helper(uid):
 
 		recommended_aid_list = []
 		df_neighbors = pd.read_csv('./Export/webapp_neighbors_map.csv')
-		for i in range(0, min(len(aid_list), 10)):
+		for i in range(0, min(len(aid_list), artists_to_poll)):
 			aid=aid_list[i]
-			req = 10
+			req = items_per_artist
 			df_filtered = df_neighbors[aid]
 			valid = df_filtered.loc[np.bitwise_not(np.bitwise_or(np.isin(df_filtered, aid_list), np.isin(df_filtered, recommended_aid_list)))]
 			print(f'valid length: {len(valid)}')
