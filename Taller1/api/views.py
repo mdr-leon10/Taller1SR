@@ -111,7 +111,7 @@ def like_artist(request):
 	except:
 		return JsonResponse({'error': "an error ocurred, could not update the user's preferences"}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@api_view(['POST'])
+@api_view(['GET'])
 def push_recommendation_window(request, user_id):
 	try:
 		user = User.objects.get(user_id = user_id)

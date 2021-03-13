@@ -4,6 +4,7 @@ from django.conf.urls import url
 
 urlpatterns = [
     # Public endpoints
+    path('push/<str:user_id>/', views.push_recommendation_window),
     path('login/', views.login),
     path('users/', views.get_all_users),
     path('user/<str:user_query_id>', views.get_user_data),
@@ -11,5 +12,4 @@ urlpatterns = [
     path('recommendation/<str:user_id>/', views.get_recommendations),
     path('play/', views.play_song),
     path('like/', views.like_artist),
-    path('push/<str:user_id>/', views.push_recommendation_window),
 ]
