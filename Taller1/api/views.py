@@ -198,7 +198,7 @@ def get_top_artists(request):
 def get_artist_detail(request, artist_id):
 	try:
 		songs_raw = Songs.objects.all().filter(artist_id=artist_id)
-		songs = SongsSerializer(songs_raw)
+		songs = SongsSerializer(songs_raw, many=True)
 		
 		total_play = 0
 		for x in songs_raw:
