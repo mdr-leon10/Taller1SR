@@ -198,6 +198,5 @@ def get_top_artists(request):
 
 
 #TODO: search song/artist name
-#TODO: top discover
 #TODO: get info from aid
 #TODO: get info from tid

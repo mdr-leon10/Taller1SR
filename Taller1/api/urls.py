@@ -4,6 +4,7 @@ from django.conf.urls import url
 
 urlpatterns = [
     # Public endpoints
+    path('top/', views.get_top_artists),
     path('push/<str:user_id>/', views.push_recommendation_window),
     path('history/<str:user_id>/', views.get_user_history),
     path('login/', views.login),
