@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import User
-from .models import Interactions
-from .models import Songs
+from api.models import User
+from api.models import Songs
+from api.models import ArtistLiked
 
 # Register your models here.
 admin.site.register(User)
-admin.site.register(Interactions)
+admin.site.register(ArtistLiked)
 admin.site.register(Songs)

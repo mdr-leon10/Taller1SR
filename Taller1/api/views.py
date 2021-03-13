@@ -3,8 +3,8 @@ from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes, permission_classes
-from api.serializers import UserSerializer, InteractionsSerializer, SongsSerializer, ArtistLikedSerializer
-from api.models import User, Interactions, Songs, ArtistLiked
+from api.serializers import UserSerializer, SongsSerializer, ArtistLikedSerializer
+from api.models import User, Songs, ArtistLiked
 
 # Rendering response
 from rest_framework.renderers import JSONRenderer
@@ -83,9 +83,8 @@ def play_song(request):
 
 		try:
 			user = User.objects.get(user_id = uid)
-			if not user.is_old_user:
-				if not like_artist_helper(user.user_id, song_obj.artist_id):
-					log.append('user was new but failed to like artist')
+			if not like_artist_helper(user.user_id, song_obj.artist_id):
+				log.append('user was new but failed to like artist')
 		except User.DoesNotExist:
 			log.append('user entered did not exist')
 		except:
@@ -110,15 +109,18 @@ def like_artist(request):
 	except:
 		return JsonResponse({'error': "an error ocurred, could not update the user's preferences"}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-def like_artist_helper(uid, aid):
+def like_artist_helper(uid, aid, counts):
 	try:
 		al, created = ArtistLiked.objects.get_or_create(user_id=uid, artist_id=aid)
+		if counts:
+			al.play_count = al.play_count+1
+			al.save()
 		return True
 	except:
 		logging.exception('Error for like artist helper')
 		return False
 
-def get_top_artists_helper(uid):
+# def get_top_artists_helper(uid):
 	
 
 #TODO: get info from aid
