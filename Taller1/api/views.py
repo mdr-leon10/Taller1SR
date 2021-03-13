@@ -11,6 +11,8 @@ from rest_framework.renderers import JSONRenderer
 
 # Pandas stuff
 import pandas as pd
+import numpy as np
+import random
 
 # Logging
 import sys
@@ -64,8 +66,8 @@ def get_recommendations(request, user_id):
 			sample = df_top_for_user[['iid','est']][min_id:max_id].to_dict()
 			return JsonResponse(sample, safe=False, status=status.HTTP_200_OK)
 		else:
-			# TODO: add best songs based on items.
-			return JsonResponse({'message': 'work in progress'}, safe=False, status=status.HTTP_200_OK)
+			res = get_top_artists_helper(user.user_id)
+			return JsonResponse({'results': res}, safe=False, status=status.HTTP_200_OK)
 
 	except User.DoesNotExist:
 		return JsonResponse({'error': 'User does not exist'}, safe=False,status=status.HTTP_404_NOT_FOUND)
@@ -120,8 +122,36 @@ def like_artist_helper(uid, aid, counts):
 		logging.exception('Error for like artist helper')
 		return False
 
-# def get_top_artists_helper(uid): 
-	
+def get_top_artists_helper(uid):
+	try: 
+		artistsLiked = ArtistLiked.objects.all().filter(user_id=uid)
+		aid_list = []
+		i = 0
+		for x in artistsLiked:
+			aid_list.append(x.artist_id)
+		
+		user = User.objects.get(user_id=uid)
+		random.seed(user.recommendation_frame)
+		random.shuffle(aid_list)
+
+		recommended_aid_list = []
+		df_neighbors = pd.read_csv(f'./Export/webapp_neighbors_map.csv')
+		for i in range(0, min(len(aid_list), 10))
+			aid=aid_list[i]
+			req = 10
+			df_filtered = df_neighbors[aid]
+			valid = df_filtered.loc[np.bitwise_not(np.bitwise_or(np.isin(df_filtered[aid], aid_list), np.isin(df_filtered[aid], recommended_aid_list)))]
+			for x in valid[aid]:
+				req -= 1
+				recommended_aid_list.append(x)
+				if req == 0:
+					break
+		
+		random.shuffle(recommended_aid_list)
+		filtered_res = recommended_aid_list[0:min(len(recommended_aid_list), 10)]
+	except:
+		logging.exception('Error for top artists helper')
+		return False
 
 #TODO: get info from aid
 #TODO: get info from tid
