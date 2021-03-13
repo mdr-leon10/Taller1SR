@@ -66,7 +66,7 @@ def get_recommendations(request, user_id):
 			sample = df_top_for_user[['iid','est']][min_id:max_id].to_dict()
 			return JsonResponse(sample, safe=False, status=status.HTTP_200_OK)
 		else:
-			res = get_top_artists_helper(user.user_id)
+			res = get_top_artists_helper(user.user_id, user.recommendation_frame)
 			return JsonResponse({'results': res}, safe=False, status=status.HTTP_200_OK)
 
 	except User.DoesNotExist:
@@ -119,10 +119,10 @@ def like_artist_helper(uid, aid, counts):
 			al.save()
 		return True
 	except:
-		logging.exception('Error for like artist helper')
+		logging.exception('Error for like_artist_helper')
 		return False
 
-def get_top_artists_helper(uid):
+def get_top_artists_helper(uid, recommendation_frame):
 	items_per_artist = 3
 	artists_to_poll = 5
 	try: 
@@ -132,8 +132,7 @@ def get_top_artists_helper(uid):
 		for x in artistsLiked:
 			aid_list.append(x.artist_id)
 		
-		user = User.objects.get(user_id=uid)
-		random.seed(user.recommendation_frame)
+		random.seed(recommendation_frame)
 		random.shuffle(aid_list)
 
 		recommended_aid_list = []
@@ -154,9 +153,21 @@ def get_top_artists_helper(uid):
 		filtered_res = recommended_aid_list[0:min(len(recommended_aid_list), 10)]
 		return filtered_res
 	except:
-		logging.exception('Error for top artists helper')
+		logging.exception('Error for get_top_artists_helper')
 		return []
+
+def push_recommendation_window(request, user_id):
+	try:
+		user = User.objects.get(user_id = user_id)
+		if user.recommendation_frame == 9:
+			user.recommendation_frame = 0
+		else:
+			user.recommendation_frame = user.recommendation_frame+1
+		user.save()
+		return JsonResponse('Successfully updated recommendation window', safe=False,status=status.HTTP_200_OK)
+	except:
+		logging.exception('Error for push_recommendation_window')
+		return JsonResponse({'error': "an error ocurred, could not update the user's recommendation window"}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 #TODO: get info from aid
 #TODO: get info from tid
-#TODO: push recommendation window
