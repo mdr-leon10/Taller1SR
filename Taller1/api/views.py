@@ -194,8 +194,35 @@ def get_top_artists(request):
 		logging.exception('Error for get_top_artists')
 		return JsonResponse({'error': 'could not retrieve top 100 artists'}, safe=False,status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(['GET'])
+def get_artist_detail(request, artist_id):
+	try:
+		songs_raw = Songs.objects.all().filter(artist_id=artist_id)
+		songs = SongsSerializer(songs_raw)
+		
+		total_play = 0
+		for x in songs_raw:
+			total_play+= x.play_count
 
+		return JsonResponse({
+			'artist_id': songs_raw[0].artist_id,
+			'artist_name': songs_raw[0].artist_name
+			'total_play': total_play,
+			'songs': songs.data
+			}, safe=False, status=status.HTTP_200_OK)
+	except:
+		logging.exception('Error for get_track_detail')
+		return JsonResponse({'error': f'could not retrieve artist with id {artist_id}'}, safe=False,status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(['GET'])
+def get_track_detail(request, track_id):
+	try:
+		song_raw = Songs.objects.get(track_id=track_id)
+		song = SongsSerializer(song_raw)
+		return JsonResponse(song.data, safe=False, status=status.HTTP_200_OK)
+	except:
+		logging.exception('Error for get_track_detail')
+		return JsonResponse({'error': f'could not retrieve song with id {track_id}'}, safe=False,status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 #TODO: search song/artist name
 #TODO: get info from aid
