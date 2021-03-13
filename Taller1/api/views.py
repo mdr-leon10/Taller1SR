@@ -83,7 +83,7 @@ def play_song(request):
 
 		try:
 			user = User.objects.get(user_id = uid)
-			if not like_artist_helper(user.user_id, song_obj.artist_id):
+			if not like_artist_helper(user.user_id, song_obj.artist_id, True):
 				log.append('user was new but failed to like artist')
 		except User.DoesNotExist:
 			log.append('user entered did not exist')
@@ -101,7 +101,7 @@ def like_artist(request):
 	try:
 		uid = payload['user_id']
 		aid = payload['artist_id']
-		valid = like_artist_helper(uid, aid)
+		valid = like_artist_helper(uid, aid, False)
 		if valid:
 			return JsonResponse({'msg': "was able to update the user's preferences"}, safe=False, status=status.HTTP_202_ACCEPTED)
 		else:
@@ -120,7 +120,7 @@ def like_artist_helper(uid, aid, counts):
 		logging.exception('Error for like artist helper')
 		return False
 
-# def get_top_artists_helper(uid):
+# def get_top_artists_helper(uid): 
 	
 
 #TODO: get info from aid
