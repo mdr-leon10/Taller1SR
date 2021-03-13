@@ -141,7 +141,7 @@ def get_top_artists_helper(uid):
 			req = 10
 			df_filtered = df_neighbors[aid]
 			valid = df_filtered.loc[np.bitwise_not(np.bitwise_or(np.isin(df_filtered, aid_list), np.isin(df_filtered, recommended_aid_list)))]
-			logging.log(valid, 'VALID RESULT FOR QUERY')
+			logging.log(valid)
 			for x in valid:
 				req -= 1
 				recommended_aid_list.append(x)
@@ -149,7 +149,7 @@ def get_top_artists_helper(uid):
 					break
 		
 		random.shuffle(recommended_aid_list)
-		logging.log(valid, 'RECOMMENDED AID LIST FOR QUERY')
+		logging.log(recommended_aid_list)
 		filtered_res = recommended_aid_list[0:min(len(recommended_aid_list), 10)]
 	except:
 		logging.exception('Error for top artists helper')
