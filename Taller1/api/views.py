@@ -120,7 +120,7 @@ def push_recommendation_window(request, user_id):
 		else:
 			user.recommendation_frame = user.recommendation_frame+1
 		user.save()
-		return JsonResponse(({'msg': 'Successfully updated recommendation window'}, safe=False,status=status.HTTP_200_OK)
+		return JsonResponse({'msg': 'Successfully updated recommendation window'}, safe=False,status=status.HTTP_200_OK)
 	except:
 		logging.exception('Error for push_recommendation_window')
 		return JsonResponse({'error': "an error ocurred, could not update the user's recommendation window"}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -178,10 +178,10 @@ def get_user_history(request, user_id):
 		user_history = ArtistLiked.objetcs.all().filter(user_id=user_id)
 		user_history = user_history[0:min(max_length, len(user_history))]
 		history_data = ArtistLikedSerializer(user_history, many=True)
-		return JsonResponse({'history': history_data}, safe=False, status=status.HTTP_200_OK)
+		return JsonResponse({'history': history_data}, safe=False,status=status.HTTP_200_OK)
 	except:
 		logging.exception('Error for get_user_history')
-		return JsonResponse({'error': 'could not retrieve user history'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+		return JsonResponse({'error': 'could not retrieve user history'}, safe=False,status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 #TODO: search song/artist name
