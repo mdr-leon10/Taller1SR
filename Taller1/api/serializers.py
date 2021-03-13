@@ -19,3 +19,7 @@ class ArtistLikedSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArtistLiked
         fields = ['identifier', 'artist_id', 'user_id', 'play_count']
+
+class ArtistPlayTotalSerializer(serializers.Serializer):
+    artist_id = serializers.CharField()
+    play_sum = serializers.IntegerField()

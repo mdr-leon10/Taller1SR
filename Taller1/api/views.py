@@ -4,7 +4,7 @@ from django.db.models import Sum
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes, permission_classes
-from api.serializers import UserSerializer, SongsSerializer, ArtistLikedSerializer
+from api.serializers import UserSerializer, SongsSerializer, ArtistLikedSerializer, ArtistPlayTotalSerializer
 from api.models import User, Songs, ArtistLiked
 
 # Rendering response
@@ -188,7 +188,8 @@ def get_user_history(request, user_id):
 def get_top_artists(request):
 	try:
 		top100_raw = ArtistLiked.objects.values('artist_id').annotate(play_sum=Sum('play_count')).order_by('-play_sum')[0:100]
-		return JsonResponse({'top': top100_raw}, safe=False,status=status.HTTP_200_OK)
+		top_100 = ArtistPlayTotalSerializer(top100_raw, many=True)
+		return JsonResponse({'top': top_100.data}, safe=False,status=status.HTTP_200_OK)
 	except:
 		logging.exception('Error for get_top_artists')
 		return JsonResponse({'error': 'could not retrieve top 100 artists'}, safe=False,status=status.HTTP_500_INTERNAL_SERVER_ERROR)
