@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http.response import JsonResponse
+from django.db.models import Sum
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes, permission_classes
@@ -182,6 +183,18 @@ def get_user_history(request, user_id):
 	except:
 		logging.exception('Error for get_user_history')
 		return JsonResponse({'error': 'could not retrieve user history'}, safe=False,status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+def get_top_artists(request):
+	try:
+		top100_raw = ArtistLiked.objects.values('artist_id').annotate(play_sum=Sum('play_count')).order_by('-play_sum')[0:100]
+		top100 = ArtistLikedSerializer(top100_raw, many=True)
+		return JsonResponse({'top': top100.data}, safe=False,status=status.HTTP_200_OK)
+	except:
+		logging.exception('Error for get_top_artists')
+		return JsonResponse({'error': 'could not retrieve top 100 artists'}, safe=False,status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 
 #TODO: search song/artist name
