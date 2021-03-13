@@ -175,7 +175,7 @@ def get_top_artists_helper(uid, recommendation_frame):
 def get_user_history(request, user_id):
 	max_length = 100
 	try:
-		user_history = ArtistLiked.objetcs.all().filter(user_id=user_id)
+		user_history = ArtistLiked.objects.all().filter(user_id=user_id)
 		user_history = user_history[0:min(max_length, len(user_history))]
 		history_data = ArtistLikedSerializer(user_history, many=True)
 		return JsonResponse({'history': history_data}, safe=False,status=status.HTTP_200_OK)
