@@ -224,6 +224,14 @@ def get_track_detail(request, track_id):
 		logging.exception('Error for get_track_detail')
 		return JsonResponse({'error': f'could not retrieve song with id {track_id}'}, safe=False,status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-#TODO: search song/artist name
-#TODO: get info from aid
-#TODO: get info from tid
+@api_view(['GET'])
+def get_songs_with_filter(request):
+	track_name_prefix = '' if 'track_name_prefix' not in request.data else request.data['track_name_prefix']
+	artist_name_prefix = '' if 'artist_name_prefix' not in request.data else request.data['artist_name_prefix']
+	try:
+		songs_query = Songs.objects.all().extra(where=["%s LIKE track_name ||'%%' AND %s LIKE artist_name ||'%%'"], params=[track_name_prefix,artist_name_prefix])
+		songs = SongsSerializer(song_raw[0, min(len(songs_query), 100)], many=True)
+		return JsonResponse(songs.data, safe=False, status=status.HTTP_200_OK)
+	except:
+		logging.exception('Error for get_songs_with_filter')
+		return JsonResponse({'error': 'could not retreive songs due to internal errors'}, safe=False,status=status.HTTP_500_INTERNAL_SERVER_ERROR)
