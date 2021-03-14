@@ -231,7 +231,7 @@ def get_songs_with_filter(request):
 	track_name_prefix = '' if 'track_name_prefix' not in query_dict else query_dict['track_name_prefix']
 	artist_name_prefix = '' if 'artist_name_prefix' not in query_dict else query_dict['artist_name_prefix']
 	try:
-		songs_query = Songs.objects.all().extra(where=["(%s LIKE track_name) AND (%s LIKE artist_name)"], params=[track_name_prefix,artist_name_prefix])
+		songs_query = Songs.objects.all().extra(where=["%s LIKE artist_name"], params=[artist_name_prefix])
 		songs = SongsSerializer(songs_query[0:min(len(songs_query), 100)], many=True)
 		return JsonResponse(songs.data, safe=False, status=status.HTTP_200_OK)
 	except:
