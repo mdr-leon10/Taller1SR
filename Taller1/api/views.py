@@ -229,9 +229,7 @@ def get_artists_with_filter(request):
 	query_dict = request.GET.dict()
 	artist_name_prefix = '' if 'artist_name_prefix' not in query_dict else query_dict['artist_name_prefix']
 	try:
-		artist_query = Songs.objects.raw('SELECT * FROM api_songs GROUP BY artist_id')
-		if artist_name_prefix != '':
-			artists_query = artist_query.filter(artist_name__contains=artist_name_prefix)
+		artist_query = Songs.objects.all().filter(artist_name__contains=artist_name_prefix).raw('SELECT * FROM api_songs GROUP BY artist_id')
 		artists_search = ArtistSearchSerializer(artists_query[0:min(len(artists_query), 100)], many=True)
 		return JsonResponse(artists_search.data, safe=False, status=status.HTTP_200_OK)
 	except:
