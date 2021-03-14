@@ -23,3 +23,8 @@ class ArtistLikedSerializer(serializers.ModelSerializer):
 class ArtistPlayTotalSerializer(serializers.Serializer):
     artist_id = serializers.CharField()
     play_sum = serializers.IntegerField()
+
+class ArtistSearchSerializer(serializers.Serializer):
+    artist_id = serializers.CharField()
+    artist_name = serializers.CharField()
+    play_sum = serializers.IntegerField()

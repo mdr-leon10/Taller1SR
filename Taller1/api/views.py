@@ -4,7 +4,7 @@ from django.db.models import Sum
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes, permission_classes
-from api.serializers import UserSerializer, SongsSerializer, ArtistLikedSerializer, ArtistPlayTotalSerializer
+from api.serializers import UserSerializer, SongsSerializer, ArtistLikedSerializer, ArtistPlayTotalSerializer, ArtistSearchSerializer
 from api.models import User, Songs, ArtistLiked
 
 # Rendering response
@@ -229,8 +229,9 @@ def get_artists_with_filter(request):
 	query_dict = request.GET.dict()
 	artist_name_prefix = '' if 'artist_name_prefix' not in query_dict else query_dict['artist_name_prefix']
 	try:
-		artists_query = Songs.objects.values('artist_id').annotate(play_sum=Sum('play_count')).order_by('-play_sum').extra(where=["(%s LIKE artist_name)"], params=[artist_name_prefix])
-		artists_search = ArtistPlayTotalSerializer(artists_query[0:min(len(artists_query), 100)], many=True)
+		artists_query = Songs.objects.values('artist_id').annotate(play_sum=Sum('play_count')).order_by('-play_sum')
+		#.extra(where=["(%s LIKE artist_name)"], params=[artist_name_prefix])
+		artists_search = ArtistSearchSerializer(artists_query[0:min(len(artists_query), 100)], many=True)
 		return JsonResponse(artists_search.data, safe=False, status=status.HTTP_200_OK)
 	except:
 		logging.exception('Error for get_songs_with_filter')
