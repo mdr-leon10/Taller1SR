@@ -226,8 +226,9 @@ def get_track_detail(request, track_id):
 
 @api_view(['GET'])
 def get_songs_with_filter(request):
-	track_name_prefix = '' if 'track_name_prefix' not in request.data else request.data['track_name_prefix']
-	artist_name_prefix = '' if 'artist_name_prefix' not in request.data else request.data['artist_name_prefix']
+	query_dict = request.GET.dict()
+	track_name_prefix = '' if 'track_name_prefix' not in query_dict else query_dict['track_name_prefix']
+	artist_name_prefix = '' if 'artist_name_prefix' not in query_dict else query_dict['artist_name_prefix']
 	try:
 		songs_query = Songs.objects.all().extra(where=["%s LIKE track_name ||'%%' AND %s LIKE artist_name ||'%%'"], params=[track_name_prefix,artist_name_prefix])
 		songs = SongsSerializer(song_raw[0, min(len(songs_query), 100)], many=True)
