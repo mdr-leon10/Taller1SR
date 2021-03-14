@@ -229,7 +229,7 @@ def get_artists_with_filter(request):
 	query_dict = request.GET.dict()
 	artist_name_prefix = '' if 'artist_name_prefix' not in query_dict else query_dict['artist_name_prefix']
 	try:
-		artists_query
+		artists_query = None
 		if artist_name_prefix == '':
 			artists_query = Songs.objects.raw(f"SELECT artist_name, artist_id, SUM(play_count) AS play_total FROM api_songs GROUP BY artist_id ORDER BY artist_name")
 		else:
