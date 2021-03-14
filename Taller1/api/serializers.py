@@ -27,4 +27,4 @@ class ArtistPlayTotalSerializer(serializers.Serializer):
 class ArtistSearchSerializer(serializers.Serializer):
     artist_id = serializers.CharField()
     artist_name = serializers.CharField()
-    play_count = serializers.IntegerField()
+    play_total = serializers.IntegerField()
