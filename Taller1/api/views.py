@@ -225,13 +225,13 @@ def get_track_detail(request, track_id):
 		return JsonResponse({'error': f'could not retrieve song with id {track_id}'}, safe=False,status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET'])
-def get_songs_with_filter(request):
+def get_artists_with_filter(request):
 	query_dict = request.GET.dict()
 	artist_name_prefix = '' if 'artist_name_prefix' not in query_dict else query_dict['artist_name_prefix']
 	try:
-		songs_query = Songs.objects.all().extra(where=["(%s LIKE artist_name)"], params=[artist_name_prefix])
-		songs = SongsSerializer(songs_query[0:min(len(songs_query), 100)], many=True)
-		return JsonResponse(songs.data, safe=False, status=status.HTTP_200_OK)
+		artists_query = Songs.objects.values('artist_id').annotate(play_sum=Sum('play_count')).order_by('-play_sum').extra(where=["(%s LIKE artist_name)"], params=[artist_name_prefix])
+		artists_search = ArtistPlayTotalSerializer(artists_query[0:min(len(artists_query), 100)], many=True)
+		return JsonResponse(artists_search.data, safe=False, status=status.HTTP_200_OK)
 	except:
 		logging.exception('Error for get_songs_with_filter')
 		return JsonResponse({'error': 'could not retreive songs due to internal errors'}, safe=False,status=status.HTTP_500_INTERNAL_SERVER_ERROR)

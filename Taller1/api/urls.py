@@ -4,7 +4,7 @@ from django.conf.urls import url
 
 urlpatterns = [
     # Public endpoints
-    path('search/', views.get_songs_with_filter),
+    path('search/', views.get_artists_with_filter),
     path('top/', views.get_top_artists),
     path('artist/<str:artist_id>/', views.get_artist_detail),
     path('track/<str:track_id>/', views.get_track_detail),
