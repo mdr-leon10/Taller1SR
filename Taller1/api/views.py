@@ -231,9 +231,9 @@ def get_artists_with_filter(request):
 	try:
 		artists_query = None
 		if artist_name_prefix == '':
-			artists_query = Songs.objects.raw(f"SELECT artist_name, artist_id, SUM(play_count) AS play_total FROM api_songs GROUP BY artist_id ORDER BY artist_name")
+			artists_query = Songs.objects.raw(f"SELECT *, SUM(play_count) AS play_total FROM api_songs GROUP BY artist_id ORDER BY artist_name")
 		else:
-			artists_query = Songs.objects.raw(f"SELECT artist_name, artist_id, SUM(play_count) AS play_total FROM api_songs WHERE (artist_name LIKE '%{artist_name_prefix}%') GROUP BY artist_id ORDER BY artist_name")
+			artists_query = Songs.objects.raw(f"SELECT *, SUM(play_count) AS play_total FROM api_songs WHERE (artist_name LIKE '%{artist_name_prefix}%') GROUP BY artist_id ORDER BY artist_name")
 		artists_search = ArtistSearchSerializer(artists_query[0:min(len(artists_query), 100)], many=True)
 		return JsonResponse(artists_search.data, safe=False, status=status.HTTP_200_OK)
 	except:
