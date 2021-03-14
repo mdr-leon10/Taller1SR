@@ -25,7 +25,7 @@ SECRET_KEY = 'i&8*s@^$ki2hv4o%p9+&3=hwcrjzga%gfs$^5wnfr726s0+eab'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['172.24.100.74:3000','localhost:3000'] 
+ALLOWED_HOSTS = ['*','172.24.100.74:3000','localhost:3000'] 
 
 
 # Application definition
@@ -41,6 +41,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
