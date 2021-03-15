@@ -195,8 +195,9 @@ def get_top_artists_helper(uid, recommendation_frame):
 			top_raw = ArtistLiked.objects.values('artist_id').annotate(play_sum=Sum('play_count')).order_by('-play_sum')
 			aid_result = []
 			for x in top_raw:
-				if x.artist_id not in general_aid_list:
-					aid_result.append(x.artist_id)
+				print(x)
+				if x['artist_id'] not in general_aid_list:
+					aid_result.append(x['artist_id'])
 				if len(aid_result) > expected_items:
 					break
 			return aid_result
