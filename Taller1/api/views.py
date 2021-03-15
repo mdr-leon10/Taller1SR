@@ -66,7 +66,7 @@ def get_recommendations(request, user_id):
 			min_id, max_id = (10*user.recommendation_frame, 10*(user.recommendation_frame + 1))
 			sample = df_top_for_user[['iid']][min_id:max_id].to_dict()
 			
-			artistsKnown = ArtistLiked.objects.all().filter(user_id=uid)
+			artistsKnown = ArtistLiked.objects.all().filter(user_id=user_id)
 			known_aid = []
 			for x in artistsKnown:
 				known_aid.append(x.artist_id)
