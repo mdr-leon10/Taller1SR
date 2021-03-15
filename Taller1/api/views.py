@@ -67,14 +67,16 @@ def get_recommendations(request, user_id):
 			sample = df_top_for_user[['iid']][min_id:max_id].to_dict()
 			
 			artistsKnown = ArtistLiked.objects.all().filter(user_id=uid)
-			disliked_aid = []
+			known_aid = []
 			for x in artistsKnown:
-				disliked_aid.append(x.artist_id)
+				known_aid.append(x.artist_id)
 
 			res_list = []
 			for x in sample['iid'].values():
-				if x not in disliked_aid:
-					res_list.append(x)
+				if x in known_aid:
+					print(f'Disliked hit found on aid={x}')
+				else:
+					x.append(res_list)
 
 			if len(res_list) > 2:
 				return JsonResponse({'results': res_list}, safe=False, status=status.HTTP_200_OK)
