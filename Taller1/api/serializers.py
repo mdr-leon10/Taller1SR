@@ -18,7 +18,7 @@ class SongsSerializer(serializers.ModelSerializer):
 class ArtistLikedSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArtistLiked
-        fields = ['identifier', 'artist_id', 'user_id', 'play_count']
+        fields = ['identifier', 'artist_id', 'user_id', 'play_count', 'liked']
 
 class ArtistPlayTotalSerializer(serializers.Serializer):
     artist_id = serializers.CharField()

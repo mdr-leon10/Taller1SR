@@ -86,7 +86,7 @@ def play_song(request):
 
 		try:
 			user = User.objects.get(user_id = uid)
-			if not like_artist_helper(user.user_id, song_obj.artist_id, True):
+			if not like_artist_helper(user.user_id, song_obj.artist_id, True, True):
 				log.append('user was new but failed to like artist')
 		except User.DoesNotExist:
 			log.append('user entered did not exist')
@@ -104,13 +104,28 @@ def like_artist(request):
 	try:
 		uid = payload['user_id']
 		aid = payload['artist_id']
-		valid = like_artist_helper(uid, aid, False)
+		valid = like_artist_helper(uid, aid, False, True)
 		if valid:
 			return JsonResponse({'msg': "was able to update the user's preferences"}, safe=False, status=status.HTTP_202_ACCEPTED)
 		else:
 			return JsonResponse({'error': "an error ocurred, could not update the user's preferences"}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 	except:
 		return JsonResponse({'error': "an error ocurred, could not update the user's preferences"}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+def dislike_artist(request):
+	payload = request.data
+	try:
+		uid = payload['user_id']
+		aid = payload['artist_id']
+		valid = like_artist_helper(uid, aid, False, False)
+		if valid:
+			return JsonResponse({'msg': "was able to update the user's preferences"}, safe=False, status=status.HTTP_202_ACCEPTED)
+		else:
+			return JsonResponse({'error': "an error ocurred, could not update the user's preferences"}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+	except:
+		return JsonResponse({'error': "an error ocurred, could not update the user's preferences"}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(['GET'])
 def push_recommendation_window(request, user_id):
@@ -127,12 +142,13 @@ def push_recommendation_window(request, user_id):
 		return JsonResponse({'error': "an error ocurred, could not update the user's recommendation window"}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-def like_artist_helper(uid, aid, counts):
+def like_artist_helper(uid, aid, counts, liked):
 	try:
 		al, created = ArtistLiked.objects.get_or_create(user_id=uid, artist_id=aid)
 		if counts:
 			al.play_count = al.play_count+1
-			al.save()
+		al.liked = liked
+		al.save()
 		return True
 	except:
 		logging.exception('Error for like_artist_helper')
@@ -141,33 +157,49 @@ def like_artist_helper(uid, aid, counts):
 def get_top_artists_helper(uid, recommendation_frame):
 	items_per_artist = 3
 	artists_to_poll = 5
+	expected_items = 10
 	try: 
-		artistsLiked = ArtistLiked.objects.all().filter(user_id=uid)
+		artistsLiked = ArtistLiked.objects.all().filter(user_id=uid, liked=True)
+		artistsDisliked= ArtistLiked.objects.all().filter(user_id=uid, liked=False)
+
 		aid_list = []
-		i = 0
 		for x in artistsLiked:
 			aid_list.append(x.artist_id)
 		
-		random.seed(recommendation_frame)
-		random.shuffle(aid_list)
+		general_aid_list = aid_list.copy()
+		for x in artistsDisliked:
+			general_aid_list.append(x.artist_id)
+		
+		if (len(aid_list) > 0):
+			random.seed(recommendation_frame)
+			random.shuffle(aid_list)
 
-		recommended_aid_list = []
-		df_neighbors = pd.read_csv('./Export/webapp_neighbors_map.csv')
-		for i in range(0, min(len(aid_list), artists_to_poll)):
-			aid=aid_list[i]
-			req = items_per_artist
-			df_filtered = df_neighbors[aid]
-			valid = df_filtered.loc[np.bitwise_not(np.bitwise_or(np.isin(df_filtered, aid_list), np.isin(df_filtered, recommended_aid_list)))]
-			print(f'valid length: {len(valid)}')
-			for x in valid:
-				req -= 1
-				recommended_aid_list.append(x)
-				if req == 0:
+			recommended_aid_list = []
+			df_neighbors = pd.read_csv('./Export/webapp_neighbors_map.csv')
+			for i in range(0, min(len(aid_list), artists_to_poll)):
+				aid=aid_list[i]
+				req = items_per_artist
+				df_filtered = df_neighbors[aid]
+				valid = df_filtered.loc[np.bitwise_not(np.bitwise_or(np.isin(df_filtered, general_aid_list), np.isin(df_filtered, recommended_aid_list)))]
+				print(f'valid length: {len(valid)}')
+				for x in valid:
+					req -= 1
+					recommended_aid_list.append(x)
+					if req == 0:
+						break
+			print(f'recommended_aid_list length: {len(recommended_aid_list)}')
+			random.shuffle(recommended_aid_list)
+			filtered_res = recommended_aid_list[0:min(len(recommended_aid_list), expected_items)]
+			return filtered_res
+		else:
+			top_raw = ArtistLiked.objects.values('artist_id').annotate(play_sum=Sum('play_count')).order_by('-play_sum')
+			aid_result = []
+			for x in top_raw:
+				if x.artist_id not in general_aid_list:
+					aid_result.append(x.artist_id)
+				if len(aid_result) > expected_items:
 					break
-		print(f'recommended_aid_list length: {len(recommended_aid_list)}')
-		random.shuffle(recommended_aid_list)
-		filtered_res = recommended_aid_list[0:min(len(recommended_aid_list), 10)]
-		return filtered_res
+			return aid_result
 	except:
 		logging.exception('Error for get_top_artists_helper')
 		return []
