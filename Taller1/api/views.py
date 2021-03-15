@@ -223,7 +223,7 @@ def get_top_artists_helper(uid, recommendation_frame):
 
 @api_view(['GET'])
 def get_user_history(request, user_id):
-	max_length = 100
+	max_length = 10000
 	try:
 		user_history = ArtistLiked.objects.all().filter(user_id=user_id)
 		user_history = user_history[0:min(max_length, len(user_history))]
