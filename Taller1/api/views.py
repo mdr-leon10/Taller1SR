@@ -64,8 +64,23 @@ def get_recommendations(request, user_id):
 		if user.is_old_user:
 			df_top_for_user = pd.read_csv(f'./Export/{user_id}_top_100.csv')
 			min_id, max_id = (10*user.recommendation_frame, 10*(user.recommendation_frame + 1))
-			sample = df_top_for_user[['iid','est']][min_id:max_id].to_dict()
-			return JsonResponse(sample, safe=False, status=status.HTTP_200_OK)
+			sample = df_top_for_user[['iid']][min_id:max_id].to_dict()
+			
+			artistsKnown = ArtistLiked.objects.all().filter(user_id=uid)
+			disliked_aid = []
+			for x in artistsKnown:
+				disliked_aid.append(x.artist_id)
+
+			res_list = []
+			for x in sample['iid'].values():
+				if x not in disliked_aid:
+					res_list.append(x)
+
+			if len(res_list) > 2:
+				return JsonResponse({'results': res_list}, safe=False, status=status.HTTP_200_OK)
+			else:
+				res = get_top_artists_helper(user.user_id, user.recommendation_frame)
+				return JsonResponse({'results': res}, safe=False, status=status.HTTP_200_OK)
 		else:
 			res = get_top_artists_helper(user.user_id, user.recommendation_frame)
 			return JsonResponse({'results': res}, safe=False, status=status.HTTP_200_OK)
