@@ -76,7 +76,7 @@ def get_recommendations(request, user_id):
 				if x in known_aid:
 					print(f'Disliked hit found on aid={x}')
 				else:
-					x.append(res_list)
+					res_list.append(x)
 
 			if len(res_list) > 2:
 				return JsonResponse({'results': res_list}, safe=False, status=status.HTTP_200_OK)
